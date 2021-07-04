@@ -3,6 +3,8 @@ package stepdefs.ui;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import context.CmnPageObjectContext;
+import context.WebDriverContext;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -29,52 +31,44 @@ import utils.manager.driver.staticmethod.WebDriverManagerSimple;
 
 public class SearchStepDefs extends TestBase{
 
+	WebDriverContext webDriverContext;
+	CmnPageObjectContext cmnPageObjectContext;
 	TestContextUI testContextUI;
 	Scenario scn;
 	String productClickedTextExpected;
 	
-	public SearchStepDefs(TestContextUI testContextUI) {
+	public SearchStepDefs(TestContextUI testContextUI, WebDriverContext webDriverContext, CmnPageObjectContext cmnPageObjectContext) {
 		this.testContextUI = testContextUI;
+		this.webDriverContext = webDriverContext;
+		this.cmnPageObjectContext = cmnPageObjectContext;
 	}
-	
-	@Given("^I have browser opened and url is navigated$")
-	public void i_have_browser_opened_and_url_is_navigated() throws Exception {	
 
-		/* Various ways of invoking Web Driver*/
-		/* Mehtod - 1*/
+	private void initWebDriver() throws Exception {
 		DriverManager driverManager = DriverFactory.getDriverManager("chrome");
 		WebDriver driver = driverManager.getDriver();
 		driverManager.maximizeBrowser();
 		driverManager.navigateToDriver(serverUI);
-		
-		/* OR Mehtod - 2*/
-		/*
-		 *WebDriver driver = new ChromeDriver();
-		 *driver.manage().timeouts().implicitlyWait(20000, TimeUnit.MILLISECONDS);
-		 *driver.manage().window().maximize();
-		 *driver.get(serverUI);
-		*/
-		
-
-		/* OR Mehtod - 3*/
-		/*
-		 WebDriver driver = WebDriverManagerSingleton.getInstanceOfWebDriverManager().getDriver();
-		*/
-		
-		/* OR Mehtod - 4*/
-		/*
-		WebDriver driver = WebDriverManagerSimple.getDriver("chrome");
-		*/
 		scn.write("Chrome Driver invoked and URL navigated as: " + serverUI);
-		//Assign driver and set page Objects to Test Context 
-		testContextUI.setDriver(driver);
-		testContextUI.initializePageObjectClasses(driver, scn);
+		webDriverContext.setDriver(driver);
+	}
+	
+	@Given("^I have browser opened and url is navigated$")
+	public void i_have_browser_opened_and_url_is_navigated() throws Exception {
+		initWebDriver();
+		testContextUI.initializePageObjectClasses(webDriverContext.getDriver(), scn);
+		cmnPageObjectContext.initializePageObjectClasses(webDriverContext.getDriver(), scn);
+	}
+
+	@Given("^I have browser opened$")
+	public void i_have_browser_opened_to_home_page() throws Exception {
+		initWebDriver();
+		cmnPageObjectContext.initializePageObjectClasses(webDriverContext.getDriver(), scn);
 	}
 
 	@When("I search for product as {string}")
 	public void i_search_for_product_as(String product) {
-		testContextUI.getCmnPageObjects().SetSearchTextBox(product);
-		testContextUI.getCmnPageObjects().ClickOnSearchButton();
+		cmnPageObjectContext.getCmnPageObjects().SetSearchTextBox(product);
+		cmnPageObjectContext.getCmnPageObjects().ClickOnSearchButton();
 		scn.write("Search was sucessfull");
 		
 	}
@@ -86,22 +80,22 @@ public class SearchStepDefs extends TestBase{
 	
 	@When("I click on hamburger menu")
 	public void i_click_on_hamburger_menu() {
-		testContextUI.getCmnPageObjects().ClickOnHamburgerMenuButton();
+		cmnPageObjectContext.getCmnPageObjects().ClickOnHamburgerMenuButton();
 	}
 
 	@When("I click on hamburger menu with category as {string}")
 	public void i_click_on_hamburger_menu_with_category_as(String category) {
-		testContextUI.getCmnPageObjects().ClickOnHamburgerMenuProductCategoryLink(category);
+		cmnPageObjectContext.getCmnPageObjects().ClickOnHamburgerMenuProductCategoryLink(category);
 	}
 	
 	@When("I click on hamburger menu with sub category as {string}")
 	public void i_click_on_hamburger_menu_with_sub_category_as(String subCategory) {
-		testContextUI.getCmnPageObjects().ClickOnHamburgerMenuProductSubCategoryLink(subCategory);
+		cmnPageObjectContext.getCmnPageObjects().ClickOnHamburgerMenuProductSubCategoryLink(subCategory);
 	}
 
 	@Then("Search results are displayed for products related to {string}")
 	public void search_results_are_displayed_for_products_related_to(String expectedTitle) throws Exception {
-		testContextUI.getCmnPageObjects().validatePageTitleMatch(expectedTitle);
+		cmnPageObjectContext.getCmnPageObjects().validatePageTitleMatch(expectedTitle);
 	}
 	
 	@When("I click on any product in the Search Result")
@@ -127,12 +121,12 @@ public class SearchStepDefs extends TestBase{
 	public void CleanUp(Scenario s) {
 		
 		if (s.isFailed()) {
-			TakesScreenshot scrnShot = (TakesScreenshot)testContextUI.getDriver();
+			TakesScreenshot scrnShot = (TakesScreenshot)webDriverContext.getDriver();
 			byte[] data = scrnShot.getScreenshotAs(OutputType.BYTES);
 			scn.embed(data, "image/png");
 		}
-		
-		testContextUI.getDriver().quit();
+
+		webDriverContext.getDriver().quit();
 		scn.write("Browser is Closed");
 	}
 	

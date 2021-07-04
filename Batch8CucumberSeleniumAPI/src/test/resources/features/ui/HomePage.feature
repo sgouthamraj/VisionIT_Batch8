@@ -3,7 +3,7 @@ Feature: Home Page Validation
 
 	@TC0003
 	Scenario: Validate Header links
-	  Given I have browser opened and url is navigated
+	  Given I have browser opened
 		Then Below header Links are displayed
 			|hamburger menu   |
 			|amazon prime logo|
@@ -11,5 +11,4 @@ Feature: Home Page Validation
 			|return and orders|
 			|your prime link|
 			|cart link|
-	
-			
+

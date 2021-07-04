@@ -1,6 +1,7 @@
 package utils.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -87,14 +88,14 @@ public abstract class Interact {
 	}
 	
 	public void switchToSecondWindowTab() {
-		String [] handles = (String[]) driver.getWindowHandles().toArray();
-		driver.switchTo().window(handles[1]);
+		List<String> handles = new ArrayList<>(driver.getWindowHandles());
+		driver.switchTo().window(handles.get(1));
 		logger.info("Browser Switched to second window tab.");
 	}
 	
 	public void switchToDefaultWindowTab() {
-		String [] handles = (String[]) driver.getWindowHandles().toArray();
-		driver.switchTo().window(handles[0]);
+		List<String> handles = new ArrayList<>(driver.getWindowHandles());
+		driver.switchTo().window(handles.get(0));
 		logger.info("Browser Switched to parent window tab.");
 	}
 	

@@ -19,7 +19,7 @@ public class CmnPageObjects extends Interact {
 	private By search_text_box = By.id("twotabsearchtextbox");
 	private By search_button = By.xpath("//input[@value='Go']");
 	private By hamburger_menu_link =  By.id("nav-hamburger-menu");
-	private By nav_link_logo =  By.xpath("//a[@class='nav-logo-link']");
+	private By nav_link_logo =  By.xpath("//a[@class='nav-logo-link nav-progressive-attribute']");
 	private By nav_link_cart =  By.id("nav-cart");
 	private By nav_link_prime =  By.id("nav-link-prime");
 	private By nav_link_orders =  By.id("nav-orders");

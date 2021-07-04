@@ -23,7 +23,7 @@ public class SearchPageObjects extends Interact {
 	}
 	
 	public String ClickOnProductLink() {
-		List<WebElement> list = getListOfWebElements(product_list_all);
+		List<WebElement> list = getListOfWebElements(product_list);
 		clickElement(list.get(0));
 		scn.write("Clicked on First Product Link");
 		return list.get(0).getText();
@@ -67,7 +67,7 @@ public class SearchPageObjects extends Interact {
 			if (list_products.get(i).getText().toLowerCase().contains(productName.toLowerCase())) {
 				Assert.assertTrue(true);
 			}else {
-				Assert.fail("Product not correctly displayed in the search result. Product at index: " + (i+1));
+				Assert.fail("Product not correctly displayed in the search result. Product at index: " + (i+1) + " expected text to contain " + productName.toLowerCase() + " but found string " + list_products.get(i).getText());
 			}
 		}
 		
